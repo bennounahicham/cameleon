@@ -1,29 +1,29 @@
-import { defineRouter } from '#q-app/wrappers'
-import { createRouter, createMemoryHistory, createWebHistory, createWebHashHistory } from 'vue-router'
+// src/router/index.js
+import { route } from 'quasar/wrappers'
+import { createRouter, createWebHistory } from 'vue-router'
 import routes from './routes'
+import { requireAuth, validateToken } from 'src/middleware/auth'
 
-/*
- * If not building with SSR mode, you can
- * directly export the Router instantiation;
- *
- * The function below can be async too; either use
- * async/await or return a Promise which resolves
- * with the Router instance.
- */
-
-export default defineRouter(function (/* { store, ssrContext } */) {
-  const createHistory = process.env.SERVER
-    ? createMemoryHistory
-    : (process.env.VUE_ROUTER_MODE === 'history' ? createWebHistory : createWebHashHistory)
-
+export default route(function (/* { store, ssrContext } */) {
   const Router = createRouter({
     scrollBehavior: () => ({ left: 0, top: 0 }),
     routes,
+    history: createWebHistory(process.env.VUE_ROUTER_BASE)
+  })
 
-    // Leave this as is and make changes in quasar.conf.js instead!
-    // quasar.conf.js -> build -> vueRouterMode
-    // quasar.conf.js -> build -> publicPath
-    history: createHistory(process.env.VUE_ROUTER_BASE)
+  // Ajout du middleware d'authentification
+  Router.beforeEach(requireAuth)
+
+  // Vérification du token à chaque changement de route
+  Router.beforeEach(async (to, from, next) => {
+    if (to.meta.requiresAuth) {
+      const isValidToken = await validateToken()
+      if (!isValidToken) {
+        next('/phone')
+        return
+      }
+    }
+    next()
   })
 
   return Router

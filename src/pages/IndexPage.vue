@@ -1,13 +1,21 @@
 <template>
-  <q-page class="flex flex-center">
+  <q-page class="flex column items-center justify-start">
     <img
-      alt="Quasar logo"
-      src="~assets/quasar-logo-vertical.svg"
-      style="width: 200px; height: 200px"
+      alt="logo"
+      src="~assets/logo.png"
     >
   </q-page>
 </template>
 
 <script setup>
-//
+  import { onMounted } from 'vue'
+  import { useRouter } from 'vue-router'
+
+  const router = useRouter()
+
+  onMounted(() => {
+    setTimeout(() => {
+      router.push('/langs')
+    }, 100) // 5000 ms = 5 secondes
+  })
 </script>

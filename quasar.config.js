@@ -2,6 +2,9 @@
 // https://v2.quasar.dev/quasar-cli-vite/quasar-config-file
 
 import { defineConfig } from '#q-app/wrappers'
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 export default defineConfig((/* ctx */) => {
   return {
@@ -12,6 +15,7 @@ export default defineConfig((/* ctx */) => {
     // --> boot files are part of "main.js"
     // https://v2.quasar.dev/quasar-cli-vite/boot-files
     boot: [
+      'auth'
     ],
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-file#css
@@ -41,6 +45,12 @@ export default defineConfig((/* ctx */) => {
       },
 
       vueRouterMode: 'hash', // available values: 'hash', 'history'
+
+      env: {
+        API_URL: process.env.API_URL,
+        OAUTH_CLIENT_ID: process.env.OAUTH_CLIENT_ID,
+        OAUTH_CLIENT_SECRET: process.env.OAUTH_CLIENT_SECRET,
+      },
       // vueRouterBase,
       // vueDevtools,
       // vueOptionsAPI: false,
